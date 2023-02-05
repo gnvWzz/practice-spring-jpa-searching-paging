@@ -1,6 +1,7 @@
 package com.example.democustomermanagement.service;
 
 import com.example.democustomermanagement.model.Customer;
+import com.example.democustomermanagement.model.Province;
 import com.example.democustomermanagement.repository.ICustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,11 @@ public class CustomerService implements ICustomerService {
     @Override
     public void remove(Long id) {
         customerRepository.deleteById(id);
+    }
+
+    @Override
+    public Iterable<Customer> findAllByProvince(Province province) {
+        return customerRepository.findAllByProvince(province);
     }
 
     @Override

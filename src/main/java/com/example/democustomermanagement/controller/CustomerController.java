@@ -1,7 +1,9 @@
 package com.example.democustomermanagement.controller;
 
 import com.example.democustomermanagement.model.Customer;
+import com.example.democustomermanagement.model.Province;
 import com.example.democustomermanagement.service.ICustomerService;
+import com.example.democustomermanagement.service.IProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +19,17 @@ public class CustomerController {
     @Autowired
     private ICustomerService customerService;
 
+    @Autowired
+    private IProvinceService provinceService;
+
+    @ModelAttribute("provinces")
+    public Iterable<Province> provinces(){
+        return provinceService.findAll();
+    }
+
     @GetMapping("/create-customer")
     public ModelAndView showCreateForm() {
-        ModelAndView modelAndView = new ModelAndView("create");
+        ModelAndView modelAndView = new ModelAndView("customers/create");
         modelAndView.addObject("customer", new Customer());
         return modelAndView;
     }
@@ -27,7 +37,7 @@ public class CustomerController {
     @PostMapping("/create")
     public ModelAndView saveCustomer(@ModelAttribute("customer") Customer customer) {
         customerService.save(customer);
-        ModelAndView modelAndView = new ModelAndView("create");
+        ModelAndView modelAndView = new ModelAndView("customers/create");
         modelAndView.addObject("customer", new Customer());
         modelAndView.addObject("message", "New customer created successfully");
         return modelAndView;
@@ -45,11 +55,11 @@ public class CustomerController {
     public ModelAndView showEditForm(@PathVariable Long id) {
         Optional<Customer> customer = customerService.findById(id);
         if (customer.isPresent()) {
-            ModelAndView modelAndView = new ModelAndView("edit");
+            ModelAndView modelAndView = new ModelAndView("customers/edit");
             modelAndView.addObject("customer", customer.get());
             return modelAndView;
         } else {
-            ModelAndView modelAndView = new ModelAndView("error.404");
+            ModelAndView modelAndView = new ModelAndView("customers/error.404");
             return modelAndView;
         }
     }
@@ -57,7 +67,7 @@ public class CustomerController {
     @PostMapping("/edit-customer")
     public ModelAndView updateCustomer(@ModelAttribute("customer") Customer customer) {
         customerService.save(customer);
-        ModelAndView modelAndView = new ModelAndView("edit");
+        ModelAndView modelAndView = new ModelAndView("customers/edit");
         modelAndView.addObject("customer", customer);
         modelAndView.addObject("message", "Customer updated successfully");
         return modelAndView;
@@ -67,12 +77,12 @@ public class CustomerController {
     public ModelAndView showDeleteForm(@PathVariable Long id) {
         Optional<Customer> customer = customerService.findById(id);
         if (customer.isPresent()) {
-            ModelAndView modelAndView = new ModelAndView("delete");
+            ModelAndView modelAndView = new ModelAndView("customers/delete");
             modelAndView.addObject("customer", customer.get());
             return modelAndView;
 
         } else {
-            ModelAndView modelAndView = new ModelAndView("error.404");
+            ModelAndView modelAndView = new ModelAndView("customers/error.404");
             return modelAndView;
         }
     }
@@ -89,11 +99,11 @@ public class CustomerController {
     public ModelAndView showCustomerDetail(@PathVariable Long id) {
         Optional<Customer> customer = customerService.findById(id);
         if (customer.isPresent()) {
-            ModelAndView modelAndView = new ModelAndView("info");
+            ModelAndView modelAndView = new ModelAndView("customers/info");
             modelAndView.addObject("customer", customer.get());
             return modelAndView;
         } else {
-            ModelAndView modelAndView = new ModelAndView("error.404");
+            ModelAndView modelAndView = new ModelAndView("customers/error.404");
             return modelAndView;
         }
     }
@@ -101,7 +111,7 @@ public class CustomerController {
     @GetMapping("/customers")
     public ModelAndView listCustomers(@PageableDefault(value = 4) Pageable pageable, @RequestParam("search") Optional<String> search){
         Page<Customer> customers;
-        ModelAndView modelAndView = new ModelAndView("list");
+        ModelAndView modelAndView = new ModelAndView("customers/list");
         if(search.isPresent()){
             customers = customerService.findAllByName(search.get(), pageable);
             modelAndView.addObject("search", "searching");

@@ -7,10 +7,15 @@
 <body>
 <a href="/customers">Back to list</a>.
 <p th:if="${message}" th:text="${message}"></p>
-<form th:action="@{/create}" th:object="${customer}" method="post">
+<form th:action="@{/edit-customer}" th:object="${customer}" method="post">
     <fieldset>
-        <legend>Create Customer</legend>
+        <legend>Customer Information</legend>
+        <input type="hidden" name="id" th:value="*{id}">
         <table>
+            <tr>
+                <td>Id</td>
+                <td th:text="*{id}"></td>
+            </tr>
             <tr>
                 <td>Name</td>
                 <td>
@@ -30,8 +35,19 @@
                 </td>
             </tr>
             <tr>
+                <td>Province:</td>
+                <td>
+                    <select name="province">
+                        <option th:each="p : ${provinces}"
+                                th:value="${p.id}"
+                                th:text="${p.name}"
+                                th:selected="(${customer.province}) and (${p.id} == *{province.id})"></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2">
-                    <input type="submit" value="Create">
+                    <input type="submit" value="Update">
                 </td>
             </tr>
         </table>

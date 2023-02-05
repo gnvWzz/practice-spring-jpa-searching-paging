@@ -32,8 +32,9 @@
         <th>Name</th>
         <th>Email</th>
         <th>Address</th>
-        <th></th>
-        <th></th>
+        <th>Province</th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -44,6 +45,8 @@
         </td>
         <td th:text="${c.email}"></td>
         <td th:text="${c.address}"></td>
+        <td th:if="${c.province}" th:text="${c.province.name}"></td>
+        <td th:unless="${c.province}"></td>
         <td><a th:href="@{/edit-customer/{id}(id=${c.id})}">Edit</a></td>
         <td><a th:href="@{/delete-customer/{id}(id=${c.id})}">Delete</a></td>
     </tr>
